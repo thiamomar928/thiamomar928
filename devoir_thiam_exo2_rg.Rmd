@@ -1,0 +1,218 @@
+---
+title: "Untitled"
+author: "Omar THIAM"
+date: "2023-05-07"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+## Les  4 premiers question
+
+```{r setup,error=FALSE, warning=FALSE, message=TRUE}
+knitr::opts_chunk$set(echo=TRUE, error=FALSE, warning=FALSE, message=TRUE)
+CA<- "D://ISEP2//Semestre_2//R//Cours_R_2023//Devoir1"
+df_Thiam<- read.csv2(paste0(CA,"//df_Thiam.csv"))
+head(df_Thiam)
+tail(df_Thiam)
+View(df_Thiam)
+```
+
+## Question 5
+
+
+```{r}
+knitr::opts_chunk$set(echo=TRUE, error=FALSE, warning=FALSE, message=TRUE)
+d.var.quant <- function(df, var){
+  library(ggplot2)
+  # Calcul des tendances centrales
+  moy <- mean(df[[var]])
+  med <- median(df[[var]])
+  et <- sd(df[[var]])
+  
+  # Affichage des tendances centrales
+  cat("Tendances centrales:\n")
+  cat(paste0("Moyenne: ", round(moy, 2), "\n"))
+  cat(paste0("Médiane: ", med, "\n"))
+  cat(paste0("Écart-type: ", round(et, 2), "\n"))
+  
+  # Graphiques
+  hist(df[[var]], main = paste0("Histogramme de la variable ", var), xlab = var)
+  boxplot(df[[var]], main = paste0("Boxplot de la variable ", var), ylab = var)
+
+  # Intervalle de confiance
+  conf_int <- t.test(df[[var]], conf.level = 0.95)$conf.int
+  cat(paste0("Intervalle de confiance à 95%: [", round(conf_int[1], 2), ", ",   round(conf_int[2], 2), "]\n"))
+  
+  print(hist)
+  print(boxplot)
+  
+}
+
+
+```
+
+### Var_Quanti_1
+
+```{r}
+d.var.quant(df_Thiam,"Var_Quanti_1")
+```
+
+
+### Var_Quanti_2
+
+```{r}
+d.var.quant(df_Thiam,"Var_Quanti_2")
+```
+
+
+### Var_Quanti_3
+
+```{r}
+d.var.quant(df_Thiam,"Var_Quanti_3")
+```
+
+
+### Var_Quanti_4
+
+```{r}
+d.var.quant(df_Thiam,"Var_Quanti_4")
+```
+
+
+### Var_Quanti_5
+
+```{r}
+d.var.quant(df_Thiam,"Var_Quanti_5")
+```
+
+
+
+
+## d.var.quali
+
+```{r}
+knitr::opts_chunk$set(echo=TRUE, error=FALSE, warning=FALSE, message=TRUE)
+d.var.quali <- function(var){
+  # Création d'un tableau de fréquences
+  freq_table <- table(var)
+  # Calcul des proportions
+  prop_table <- prop.table(freq_table)
+  # Affichage du tableau de fréquences et des proportions
+  cat("Tableau de fréquences :\n")
+  print(freq_table)
+  cat("\nTableau des proportions :\n")
+  print(prop_table)
+  # Création d'un graphique en barres
+  barplot(freq_table, main="Distribution de la variable", xlab="Valeurs", ylab="Fréquences", col=rainbow(length(freq_table)))
+  # Création d'un diagramme en secteurs
+  pie(freq_table, main="Répartition de la variable", col=rainbow(length(freq_table)))
+
+}
+
+```
+
+
+### Var_Quali_1
+```{r}
+Var_Quali_1<-df_Thiam$Var_Quali_1
+d.var.quali(Var_Quali_1)
+```
+
+### Var_Quali_2
+
+```{r}
+Var_Quali_2<-df_Thiam$Var_Quali_2
+d.var.quali(Var_Quali_2)
+
+```
+
+### Var_Quali_3
+```{r}
+Var_Quali_3<-df_Thiam$Var_Quali_3
+d.var.quali(Var_Quali_3)
+
+```
+
+### Var_Quali_4
+```{r}
+Var_Quali_4<-df_Thiam$Var_Quali_4
+d.var.quali(Var_Quali_4)
+```
+
+
+## Question 6
+
+### variables quantitatives
+
+Relation between Var_Quanti_1 and Var_Quanti_2 à l'aide d'un graphique de dispersion et d'un coefficient de corrélation.
+
+
+```{r}
+plot(df_Thiam$Var_Quanti_2, df_Thiam$Var_Quanti_1, main="Relation between Var_Quanti_1 and Var_Quanti_2", xlab="Var_Quanti_2", ylab="Var_Quanti_1", col="steelblue")
+
+```
+
+
+```{r}
+cor(df_Thiam$Var_Quanti_2, df_Thiam$Var_Quanti_1)
+
+```
+
+
+passons la la rg
+
+```{r}
+model <- lm(Var_Quanti_1 ~ Var_Quanti_2, data=df_Thiam)
+summary(model)
+plot(df_Thiam$Var_Quanti_2, df_Thiam$Var_Quanti_1, main="Relation entre le Var_Quanti_2 et le Var_Quanti_1", xlab="Moy", ylab="Salaire", col="steelblue")
+abline(model, col="green")
+
+```
+
+### Variables qualitatives
+
+liaison entre Var_Quali_1 and Var_Quali_2
+
+```{r}
+table(df_Thiam$Var_Quali_1, df_Thiam$Var_Quali_2)
+
+```
+ avec grapgique:
+ 
+```{r}
+ggplot(df_Thiam, aes(x=Var_Quali_1, fill=Var_Quali_2)) +
+  geom_bar(position="dodge") +
+  ggtitle("Répartition des Var_Quali_2 en fonction du Var_Quali_1") +
+  xlab("Var_Quali_1") +
+  ylab("Nombre") +
+  scale_fill_discrete(name="Var_Quali_2")
+
+```
+ 
+
+### Relation between Var_Quanti_1 and Var_Quali_1
+
+```{r}
+table(df_Thiam$Var_Quanti_1, df_Thiam$Var_Quali_1)
+
+```
+test de ki2
+
+```{r}
+chisq.test(df_Thiam$Var_Quali_1, df_Thiam$Var_Quanti_1)
+
+```
+
+Pour explorer la relation linéaire entre le genre et le salaire, nous pouvons tracer un diagramme de dispersion:
+```{r}
+library(ggplot2)
+ggplot(df_Thiam, aes(x = Var_Quali_1, y = Var_Quanti_1)) +
+  geom_point(color = "steelblue") +
+  ggtitle("Relation entre le Var_Quali_1 et le Var_Quanti_1") +
+  xlab("Var_Quali_1") +
+  ylab("Var_Quanti_1")
+
+```
+
+
